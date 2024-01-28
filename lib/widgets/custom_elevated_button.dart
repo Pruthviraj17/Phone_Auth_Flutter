@@ -10,7 +10,7 @@ class CustomElevatedButton extends StatelessWidget {
   });
 
   final void Function() onTap;
-  final String buttonText;
+  final Widget buttonText;
   final double width;
 
   @override
@@ -24,14 +24,7 @@ class CustomElevatedButton extends StatelessWidget {
           shape: const RoundedRectangleBorder(),
           backgroundColor: const Color(0xff2E3B62),
         ),
-        child: Text(
-          buttonText,
-          style: GoogleFonts.montserrat(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xffFFFFFF),
-          ),
-        ),
+        child: buttonText,
       ),
     );
   }

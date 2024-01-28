@@ -13,13 +13,34 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final String _countryCode = "+91";
+  Widget elevatedButtonText = Text(
+    "CONTINUE",
+    style: GoogleFonts.montserrat(
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+      color: const Color(0xffFFFFFF),
+    ),
+  );
+  bool isCalledFromAuth = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+    phoneController.dispose();
+  }
 
   void sendOTP() async {
+    setState(() {
+      elevatedButtonText = const Center(
+        child: CircularProgressIndicator(),
+      );
+    });
+
     try {
       await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: "$_countryCode${_phoneController.text.trim()}",
+        phoneNumber: "$_countryCode${phoneController.text.trim()}",
         verificationCompleted: (phoneAuthCredential) async {
           await _firebaseAuth.signInWithCredential(phoneAuthCredential);
         },
@@ -29,22 +50,38 @@ class _AuthScreenState extends State<AuthScreen> {
         codeSent: (verificationId, forceResendingToken) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (ctx) => const OtpValidationScreen(),
+              builder: (ctx) => OtpValidationScreen(
+                verificationId: verificationId,
+                sendOtpAgain: sendOTP,
+                phone: phoneController.text,
+              ),
             ),
           );
         },
         codeAutoRetrievalTimeout: (verificationId) {},
       );
     } on FirebaseAuthException catch (e) {
-      print(
+      debugPrint(
         e.toString(),
       );
     }
+    setState(() {
+      elevatedButtonText = Text(
+        "CONTINUE",
+        style: GoogleFonts.montserrat(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xffFFFFFF),
+        ),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -76,10 +113,11 @@ class _AuthScreenState extends State<AuthScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
-              controller: _phoneController,
-              cursorColor: Colors.purple,
+              controller: phoneController,
+              cursorColor: Colors.grey,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
+                hintText: "Mobile Number",
                 prefixIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
@@ -124,7 +162,7 @@ class _AuthScreenState extends State<AuthScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomElevatedButton(
-              buttonText: "CONTINUE",
+              buttonText: elevatedButtonText,
               onTap: () {
                 sendOTP();
               },

@@ -97,7 +97,14 @@ class _HomeScreenState extends State<WelcomeScreen> {
               height: 21,
             ),
             CustomElevatedButton(
-              buttonText: "NEXT",
+              buttonText: Text(
+                "NEXT",
+                style: GoogleFonts.montserrat(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xffFFFFFF),
+                ),
+              ),
               width: 220,
               onTap: () {
                 Navigator.of(context).push(
@@ -111,8 +118,15 @@ class _HomeScreenState extends State<WelcomeScreen> {
             Stack(
               // fit: StackFit.passthrough,
               children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.asset(
+                    'assets/images/waveblue.png',
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
                 Positioned(
-                  top: 8,
+                  top: 10,
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: Image.asset(
@@ -121,15 +135,8 @@ class _HomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.asset(
-                    'assets/images/waveblue.png',
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
               ],
-            )
+            ),
           ],
         ),
       ),
